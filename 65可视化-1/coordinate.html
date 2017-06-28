@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <canvas id="canvas" width="800" height="600" style="background:#000;"></canvas>
+    <script></script>
+    <script>
+        var canvas = document.getElementById('canvas');
+        var canvasContext = canvas.getContext('2d');
+
+        // 画圆
+        var drawCircle = function (x, y) {
+            canvasContext.beginPath();
+            // 画
+            canvasContext.arc(x, y, 5, 0, Math.PI * 2);
+            // 填充颜色
+            canvasContext.fillStyle = '#eee';
+            // 叠加样式
+            canvasContext.globalCompositeOperation = 'lighter';
+            // 添加到画布
+            canvasContext.fill();
+        }
+
+        // 获取圆坐标
+        var getCirsPos = function (data) {
+            var lines = data.split(/\n/);
+            var arrs = [],
+                temp;
+            lines.forEach(function (line) {
+                temp = line.split(' ');
+                arrs.push({
+                    x: temp[0],
+                    y: temp[1]
+                });
+            });
+            return arrs;
+        }
+        // 请求数据
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', './coordinate.txt');
+        xhr.send();
+        xhr.onreadystatechange = function () {
+            var DONE = 4; 
+            var OK = 200; 
+            if (xhr.readyState === DONE) {
+                if (xhr.status === OK) {
+                    getCirsPos(xhr.responseText).forEach(function (c) {
+                        drawCircle(c.x, c.y);
+                    });
+                } else {
+                    console.log("Error: " + xhr.status);
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
